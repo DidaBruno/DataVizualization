@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <script>
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", 1000)
+            .attr("height", 1000);
+
+        const circles = [
+            {x: 100, y:100, color: "blue"},  
+            {x: 220, y:100, color: "black"},  
+            {x: 340, y:100, color: "red"},  
+            {x: 160, y:150, color: "gold"},  
+            {x: 280, y:150, color: "green"}  
+        ];
+
+        svg.selectAll("circle")
+            .data(circles)
+            .enter()
+            .append("circle")
+            .attr("r", 50)
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("stroke", d => d.color)
+            .attr("stroke-width", 8)
+            .attr("fill", "none");
+    </script>
+</body>
+</html>
