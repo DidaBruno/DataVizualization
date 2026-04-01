@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stupcasti graf</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+
+    <h2>Stupčasti graf - Hrvatska djela prevedena na strani jezik</h2>
+
+    <script>
+    const data = [
+        { "Strani jezik": "španjolski" },
+        { "Strani jezik": "češki" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "albanski" },
+        { "Strani jezik": "mađarski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "talijanski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "slovenski" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "talijanski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "slovenski" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "mađarski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "švedski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "slovenski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "talijanski" },
+        { "Strani jezik": "talijanski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "francuski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "engleski" },
+        { "Strani jezik": "poljski" },
+        { "Strani jezik": "bugarski" },
+        { "Strani jezik": "njemački" },
+        { "Strani jezik": "slovenski" },
+        { "Strani jezik": "slovački" },
+        { "Strani jezik": "poljski" }
+    ];
+    
+    //TASK 2
+    const counts = d3.nest()
+            .key(d => d["Strani jezik"])
+            .rollup(v => v.length)
+            .entries(data);
+
+    const width = 800;
+    const height = 400;
+    const margin = {top:20, right:20, bottom:80, left:50};
+    
+    // TASK 4
+    const color = d3.scale.ordinal()
+        .domain(counts.map(d => d.key))
+        .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd",
+                "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"]);
+    //
+
+    const svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scale.ordinal()
+        .domain(counts.map(d => d.key))
+        .rangeRoundBands([0, width], 0.2);
+
+    const y = d3.scale.linear()
+        .domain([0, d3.max(counts, d => d.values)])
+        .range([height, 0]);
+
+    const xAxis = d3.svg.axis().scale(x).orient("bottom");
+    const yAxis = d3.svg.axis().scale(y).orient("left");
+
+    svg.selectAll("bar")
+        .data(counts)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.key))
+        .attr("width", x.rangeBand())
+        .attr("y", d => y(d.values))
+        .attr("height", d => height - y(d.values))
+        // TASK 2
+        .style("fill", "steelblue");
+        // TASK 4
+        //.style("fill", d => color(d.key));
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(xAxis)
+        // for rotating all the languages so they fit
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+    
+    // TASK 3
+    svg.append("text")
+        .attr("x", width/2)
+        .attr("y", height + margin.bottom - 10)  
+        .style("text-anchor", "middle")
+        .text("Strani jezik");
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left + 15)
+        .attr("x", -height/2)
+        .style("text-anchor", "middle")
+        .text("Broj djela");
+    </script>
+</body>
+</html>
