@@ -11,7 +11,7 @@
     <h2>Linijski graf - Prikaz više skupova podataka</h2>
 
     <script>
-    // Datasets
+    // DATASETS - for each line on the line chart
     const data1 = [ {x: 1, y: 5}, {x: 2, y: 3}, {x: 3, y: 7}, {x: 4, y: 15} ];
     const data2 = [ {x: 1, y: 3}, {x: 2, y: 9}, {x: 3, y: 5}, {x: 4, y: 10} ];
     const data3 = [ {x: 1, y: 4}, {x: 2, y: 6}, {x: 3, y: 9}, {x: 4, y: 12} ];
@@ -21,38 +21,26 @@
     const width = 600 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
     
+    // SCALES
     const xMax = d3.max(datasets, dataset => d3.max(dataset, d => d.x));
     const yMax = d3.max(datasets, dataset => d3.max(dataset, d => d.y));
     const x = d3.scale.linear().domain([1, xMax]).range([0, width]);
     const y = d3.scale.linear().domain([0, yMax+2]).range([height, 0]);
-    const color = d3.scale.category10();
-
-    const xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-    const yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left");  
+    
+    const color = d3.scale.category10(); 
+    
+    // LINES - 
+    const line = d3.svg.line()
+    .x(d => x(d.x))
+    .y(d => y(d.y));
 
     const svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", `translate(0,${height})`)
-        .call(xAxis)
-
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-
-    const line = d3.svg.line()
-        .x(d => x(d.x))
-        .y(d => y(d.y));
-
+    
+    // LINE CHART
     datasets.forEach((dataset, i) => {
         svg.append("path")
             .datum(dataset)
@@ -62,6 +50,15 @@
             .style("Stroke-width", "3px")
             .style("fill", "none");
     });
+
+    // AXIS
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.svg.axis().scale(x).orient("bottom"))
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.svg.axis().scale(y).orient("left"))
   </script>
 </body>
 </html>

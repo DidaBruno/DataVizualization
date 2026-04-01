@@ -75,22 +75,14 @@
         { "Strani jezik": "poljski" }
     ];
     
-    //TASK 2
+    const width = 800;
+    const height = 400;
+    const margin = {top:20, right:20, bottom:80, left:50};  
+
     const counts = d3.nest()
             .key(d => d["Strani jezik"])
             .rollup(v => v.length)
             .entries(data);
-
-    const width = 800;
-    const height = 400;
-    const margin = {top:20, right:20, bottom:80, left:50};
-    
-    // TASK 4
-    const color = d3.scale.ordinal()
-        .domain(counts.map(d => d.key))
-        .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd",
-                "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"]);
-    //
 
     const svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -98,17 +90,15 @@
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    // SCALES
     const x = d3.scale.ordinal()
         .domain(counts.map(d => d.key))
         .rangeRoundBands([0, width], 0.2);
-
     const y = d3.scale.linear()
         .domain([0, d3.max(counts, d => d.values)])
         .range([height, 0]);
-
-    const xAxis = d3.svg.axis().scale(x).orient("bottom");
-    const yAxis = d3.svg.axis().scale(y).orient("left");
-
+    
+    // BAR CHART
     svg.selectAll("bar")
         .data(counts)
         .enter()
@@ -118,35 +108,20 @@
         .attr("width", x.rangeBand())
         .attr("y", d => y(d.values))
         .attr("height", d => height - y(d.values))
-        // TASK 2
         .style("fill", "steelblue");
-        // TASK 4
-        //.style("fill", d => color(d.key));
-
+    
+    // AXIS
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", `translate(0,${height})`)
-        .call(xAxis)
+        .call(d3.svg.axis().scale(x).orient("bottom"))
         // for rotating all the languages so they fit
         .selectAll("text")
         .attr("transform", "rotate(-45)")
         .style("text-anchor", "end");
     svg.append("g")
         .attr("class", "y axis")
-        .call(yAxis);
-    
-    // TASK 3
-    svg.append("text")
-        .attr("x", width/2)
-        .attr("y", height + margin.bottom - 10)  
-        .style("text-anchor", "middle")
-        .text("Strani jezik");
-    svg.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", -margin.left + 15)
-        .attr("x", -height/2)
-        .style("text-anchor", "middle")
-        .text("Broj djela");
+        .call( d3.svg.axis().scale(y).orient("left"));
     </script>
 </body>
 </html>
