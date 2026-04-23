@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+    <script>
+        var w = 600, h = 600;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        var cx = w / 2;
+        var cy = h / 2;
+
+        svg.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 600)
+            .attr("height", 600)
+            .style("fill", "black");
+
+        svg.append("circle")
+            .attr("cx", cx)
+            .attr("cy", cy)
+            .attr("r", 25)
+            .style("fill", "gold");
+
+        var planets = [
+            {name:"Mercury", r: 50,  size: 4, speed: 0.040, angle: 0, color: "darkgray"},
+            {name:"Venus",   r: 80,  size: 6, speed: 0.030, angle: 0, color: "darkorange"},
+            {name:"Earth",   r: 110, size: 7, speed: 0.025, angle: 0, color: "dodgerblue"},
+            {name:"Mars",    r: 140, size: 5, speed: 0.020, angle: 0, color: "orangered"},
+            {name:"Jupiter", r: 180, size: 12, speed: 0.013, angle: 0, color: "wheat"},
+            {name:"Saturn",  r: 220, size: 10, speed: 0.010, angle: 0, color: "tan"},
+            {name:"Uranus",  r: 260, size: 8, speed: 0.007, angle: 0, color: "blue"}
+        ];
+
+        svg.selectAll(".orbit")
+            .data(planets)
+            .enter()
+            .append("circle")
+            .attr("class", "orbit")
+            .attr("cx", cx)
+            .attr("cy", cy)
+            .attr("r", function(d){ return d.r; })
+            .style("fill", "none")
+            .style("stroke", "white")
+            .style("stroke-width", 0.5)
+            .style("opacity", 0.3);
+
+        var circles = svg.selectAll(".planet")
+            .data(planets)
+            .enter()
+            .append("circle")
+            .attr("class", "planet")
+            .attr("r", function(d){ return d.size; })
+            .style("fill", function(d){ return d.color; });
+
+        // planet animations
+        d3.timer(function() {
+
+            planets.forEach(function(p) {
+
+                p.angle += p.speed;
+
+                p.x = cx + p.r * Math.cos(p.angle);
+                p.y = cy + p.r * Math.sin(p.angle);
+            });
+
+            circles
+                .attr("cx", function(d){ return d.x; })
+                .attr("cy", function(d){ return d.y; });
+
+        });
+
+    </script>
+</body>
+</html>

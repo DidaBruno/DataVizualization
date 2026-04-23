@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+    <script>
+        var widthSVG = 400;
+        var heightSVG = 400;
+
+        var rectWidth = 100;
+        var rectHeight = 60;
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", widthSVG)
+            .attr("height", heightSVG);
+
+        var rect = svg.append("rect")
+            .attr("x", widthSVG - rectWidth)
+            .attr("y", heightSVG - rectHeight)
+            .attr("width", rectWidth)
+            .attr("height", rectHeight)
+            .style("fill", "blue");
+
++        rect.transition()
+            .duration(1000)
+            .attr("transform", `translate(${-(widthSVG - rectWidth)}, 0)`)
+
+            .transition()
+            .duration(1000)
+            .attr("transform", `translate(${-(widthSVG - rectWidth)}, ${-(heightSVG - rectHeight)})`);
+
+    </script>
+</body>
+</html>

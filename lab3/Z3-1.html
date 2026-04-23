@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+    <script>
+        var widthSVG = 400;
+        var heightSVG = 400;
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", widthSVG)
+            .attr("height", heightSVG);
+
+        var side = 50;
+
+        var square = svg.append("rect")
+            .attr("x", 200)
+            .attr("y", 200)
+            .attr("width", side)
+            .attr("height", side)
+            .style("fill", "white")
+            .style("stroke", "blue")
+            .style("stroke-width", 2);
+
+        square.transition()
+            .delay(3000)
+            .duration(5000)
+            .style("fill", "blue")
+
+            .transition()
+            .duration(3000)
+            .attr("x", 200 - (widthSVG / 2 - 50) / 2)
+            .attr("y", 200 - (widthSVG / 2 - 50) / 2)
+            .attr("width", widthSVG / 2)
+            .attr("height", widthSVG / 2)
+            .style("opacity", 0);
+            
+    </script>
+</body>
+</html>

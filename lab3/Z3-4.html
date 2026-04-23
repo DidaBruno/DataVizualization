@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+    <script>
+        var w = 600, h = 400;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        var radius = 20;
+
+        var balls = [
+            {x: 120, y: 30, vx: 0, vy: 0},
+            {x: 300, y: 30, vx: 0, vy: 0},
+            {x: 480, y: 30, vx: 0, vy: 0}
+        ];
+
+        var platforms = [
+            {x: 70,  y: 300, w: 100, type: "rigid"},
+            {x: 250, y: 300, w: 100, type: "elastic"},
+            {x: 430, y: 300, w: 100, type: "liquid"}
+        ];
+
+        var circles = svg.selectAll("circle")
+            .data(balls)
+            .enter()
+            .append("circle")
+            .attr("r", radius)
+            .style("fill", "blue");
+
+        svg.selectAll("rect")
+            .data(platforms)
+            .enter()
+            .append("rect")
+            .attr("x", function(d){ return d.x; })
+            .attr("y", function(d){ return d.y; })
+            .attr("width", function(d){ return d.w; })
+            .attr("height", 100)
+            .style("fill", function(d){
+                if (d.type === "rigid") return "black";
+                if (d.type === "elastic") return "green";
+                return "cyan";
+            })
+            .attr("opacity", function(d) {
+                if (d.type === "liquid") return "0.5"
+            });
+
+        var g = 0.5;
+        
+        //physics
+        d3.timer(function() {
+
+            balls.forEach(function(b, i) {
+
+                b.vy += g;
+                b.y += b.vy;
+
+                var p = platforms[i];
+
+                var top = p.y;
+                var bottom = p.y + 100;
+
+                // rigid and elastic
+                if (p.type !== "liquid") {
+
+                    if (b.y + radius >= top) {
+
+                        if (p.type === "rigid") {
+                            b.y = top - radius;
+                            b.vy = 0;
+                        }
+
+                        else if (p.type === "elastic") {
+                            b.y = top - radius;
+                            b.vy *= -0.8;
+                        }
+                    }
+                }
+
+                // liquid
+                if (p.type === "liquid") {
+                    if (b.y + radius >= top && b.y <= bottom) {
+                        b.vy *= 0.40;
+                    }
+                    if (b.y > bottom - radius) {
+                        b.vy = 0;
+                        b.y = bottom - radius;
+                    }
+                }
+            });
+
+            circles
+                .attr("cx", function(d){ return d.x; })
+                .attr("cy", function(d){ return d.y; });
+
+        });
+    </script>    
+</body>
+</html>
